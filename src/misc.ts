@@ -29,6 +29,8 @@ export function cleanUpOpportunity({
                                      skills,
                                      members,
                                    }: Opportunity): LightweightOpportunity {
+
+
   return {
     id, objective, type, organizations, compensation, skills,
     membersCount: members.length,

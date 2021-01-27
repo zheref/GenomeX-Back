@@ -1,8 +1,8 @@
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Observable } from 'rxjs';
-import { Genome, LightweightOpportunity } from './types';
-import { concatAll, map } from 'rxjs/operators';
+import { Genome, LightweightOpportunity, OpportunitiesResult, Opportunity } from './types';
+import { concatAll, filter, map } from 'rxjs/operators';
 import { cleanUpOpportunity } from './misc';
 
 @Controller()
@@ -12,7 +12,7 @@ export class AppController {
   }
 
   getIndex(): string {
-    return "Index working";
+    return 'Index working';
   }
 
   @Get('bio/:handle')
@@ -25,7 +25,11 @@ export class AppController {
     return this.appService.fetchBio(params.handle).pipe(
       map((genome: Genome) => this.appService.fetchMatchesForBio(genome)),
       concatAll(),
-    ).pipe(map(oppResult => oppResult.results.map(cleanUpOpportunity)));
+    ).pipe(
+      map(({results}: OpportunitiesResult) => results.filter(o => o.organizations.length > 0)),
+    ).pipe(
+      map((opps) => opps.map(cleanUpOpportunity)),
+    );
   }
 
 }
