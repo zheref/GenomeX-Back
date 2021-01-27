@@ -11,6 +11,10 @@ export class AppController {
   constructor(private readonly appService: AppService) {
   }
 
+  getIndex(): string {
+    return "Index working";
+  }
+
   @Get('bio/:handle')
   getBio(@Param() params): Observable<Genome> {
     return this.appService.fetchBio(params.handle);
